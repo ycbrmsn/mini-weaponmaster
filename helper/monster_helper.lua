@@ -111,11 +111,15 @@ end
 function MonsterHelper:actorDie (objid, toobjid)
   local actorid = CreatureHelper:getActorID(objid)
   local pos = MyPosition:new(ActorHelper:getPosition(objid))
-  local monsterModels = { wolf, qiangdaoXiaotoumu, qiangdaoLouluo }
-  for i, v in ipairs(monsterModels) do
-    if (v.actorid == actorid) then
-      self:createFallOff(v, pos)
-      break
+  if (actorid >= 2 and actorid <= 7) then -- 新手村的人物
+    WorldHelper:spawnCreature(pos.x, pos.y, pos.z, actorid, 1)
+  else
+    local monsterModels = { wolf, qiangdaoXiaotoumu, qiangdaoLouluo }
+    for i, v in ipairs(monsterModels) do
+      if (v.actorid == actorid) then
+        self:createFallOff(v, pos)
+        break
+      end
     end
   end
 end

@@ -245,9 +245,9 @@ end
 function MyPlayer:changeHold (itemid)
   local foundItem = MyItemHelper:changeHold(self.objid, self.hold, itemid)
   self.hold = itemid
-  if (foundItem) then
-    self:showAttr(true) -- 目前默认显示近程攻击
-  end
+  -- if (foundItem) then
+  --   self:showAttr(true) -- 目前默认显示近程攻击
+  -- end
 end
 
 function MyPlayer:changeAttr (attack, defense, dodge)

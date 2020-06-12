@@ -59,20 +59,17 @@ function MyAreaHelper:showToastArea (objid, areaid)
 end
 
 function MyAreaHelper:playerEnterArea (objid, areaid)
-  MyStoryHelper:playerEnterArea(objid, areaid)
+  -- MyStoryHelper:playerEnterArea(objid, areaid)
   local myPlayer = MyPlayerHelper:getPlayer(objid)
   if (areaid == myPlayer.toAreaId) then -- 玩家自动前往地点
     AreaHelper:destroyArea(areaid)
     myPlayer.action:runAction()
-  elseif (guard:checkTokenArea(objid, areaid)) then
-  else
-    self:showToastArea(objid, areaid)
   end
   myPlayer.prevAreaId = areaid
 end
 
 function MyAreaHelper:playerLeaveArea (objid, areaid)
-  MyStoryHelper:playerLeaveArea(objid, areaid)
+  -- MyStoryHelper:playerLeaveArea(objid, areaid)
 end
 
 function MyAreaHelper:creatureEnterArea (objid)
