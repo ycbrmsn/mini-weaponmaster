@@ -10,6 +10,7 @@ MyAreaHelper = {
     MyPosition:new(-37, 7, -65), -- 大龙
   },
   monsterAreas = {},
+  outVillagePos = MyPosition:new(-36, 7, -27),
   maxRandomTimes = 10,
   showToastAreas = {} -- { areaid1 = { areaid2, name }, ... }
 }
@@ -41,6 +42,7 @@ function MyAreaHelper:initAreas ()
   for i, v in ipairs(self.monsterPositions) do
     table.insert(self.monsterAreas, AreaHelper:getAreaByPos(v))
   end
+  self.outVillageArea = AreaHelper:getAreaByPos(self.outVillagePos)
 end
 
 function MyAreaHelper:initShowToastAreas ()

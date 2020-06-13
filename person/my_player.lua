@@ -19,7 +19,10 @@ MyPlayer = {
   cantUseSkillReasons = {
     seal = 0, -- 封魔叠加数
     imprisoned = 0 -- 慑魂叠加数
-  } -- 无法使用技能原因, { string -> times }
+  }, -- 无法使用技能原因, { string -> times }
+  present1 = false, -- 五级礼包
+  present2 = false, -- 十级礼包
+  present3 = false -- 十五级礼包
 }
 
 function MyPlayer:new (objid)

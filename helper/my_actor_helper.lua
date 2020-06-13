@@ -201,13 +201,32 @@ end
 
 -- 玩家点击生物
 function MyActorHelper:playerClickActor (objid, toobjid)
-  local myActor = self:getActorByObjid(toobjid)
-  if (myActor) then
-    self:recordClickActor(objid, myActor)
-    if (myActor.wants and myActor.wants[1].style == 'sleeping') then
-      myActor.wants[1].style = 'wake'
+  local actorid = CreatureHelper:getActorID(toobjid)
+  if (actorid == 5) then -- 村长给奖励
+    local player = MyPlayerHelper:getPlayer(objid)
+    if (player.totalLevel >= 5 and not(player.presents1)) then -- 5级礼包
+      player.presents1 = true
+      Backpack:addItem(objid, MyConstant.ITEM.GREEN_BOX_ID, 1)
+      ChatHelper:sendSystemMsg('林千树：#W不错，你达到了5级，这个给你。等你到10级后再来找我。', objid)
+    elseif (player.totalLevel >= 10 and not(player.presents2)) then -- 10级礼包
+      player.presents2 = true
+      Backpack:addItem(objid, MyConstant.ITEM.BLUE_BOX_ID, 1)
+      ChatHelper:sendSystemMsg('林千树：#W不错，你达到了10级，这个给你。等你到15级后再来找我。', objid)
+    elseif (player.totalLevel >= 15 and not(player.presents3)) then -- 15级礼包
+      player.presents3 = true
+      Backpack:addItem(objid, MyConstant.ITEM.PURPLE_BOX_ID, 1)
+      ChatHelper:sendSystemMsg('林千树：#W不错，你达到了15级，这个给你。好了，我这里已经没有好东西了。', objid)
     end
-    myActor:defaultPlayerClickEvent(objid)
+  elseif (actorid == 6) then -- 大牛送回村
+    MyTimeHelper:callFnFastRuns(function ()
+      PlayerHelper:teleportHome(objid)
+    end, 2)
+  elseif (actorid == 7) then -- 二牛带出村
+    MyTimeHelper:callFnFastRuns(function ()
+      local pos = MyAreaHelper:getRandomAirPositionInArea(MyAreaHelper.outVillageArea)
+      local player = MyPlayerHelper:getPlayer(objid)
+      player:setMyPosition(pos)
+    end, 2)
   end
 end
 

@@ -1,6 +1,6 @@
 -- 日志工具类
 LogHelper = {
-  level = 'debug' -- debug info error
+  level = 'error' -- debug info error
 }
 
 function LogHelper:debug (...)
