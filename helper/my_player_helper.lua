@@ -32,7 +32,18 @@ function MyPlayerHelper:getHostPlayer ()
 end
 
 function MyPlayerHelper:initPlayer (objid)
-  self:addPlayer(objid)
+  local maxLevel = 2
+  for i, v in ipairs(self.players) do
+    if (v.totalLevel > maxLevel) then
+      maxLevel = v.totalLevel
+    end
+  end
+  local player = self:addPlayer(objid)
+  if (maxLevel > 2) then
+    player.totalLevel = maxLevel - 1
+    local msg = StringHelper:concat('当前房间内玩家最高等级为', maxLevel, '，因此你的初始等级为', maxLevel - 1, '级')
+    ChatHelper:sendSystemMsg(msg, objid)
+  end
 end
 
 -- 显示飘窗信息
