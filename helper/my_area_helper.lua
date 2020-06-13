@@ -1,7 +1,15 @@
 -- 我的区域工具类
 MyAreaHelper = {
-  playerInHomePos = { x = 31, y = 9, z = 3 },
-  wolfAreas = {},
+  monsterPositions = {
+    MyPosition:new(-87, 7, -23), -- 小鸡
+    MyPosition:new(-86, 7, -41),
+    MyPosition:new(-85, 7, -66),
+    MyPosition:new(12, 7, -26),
+    MyPosition:new(10, 7, -46),
+    MyPosition:new(11, 7, -63),
+    MyPosition:new(-37, 7, -65), -- 大龙
+  },
+  monsterAreas = {},
   maxRandomTimes = 10,
   showToastAreas = {} -- { areaid1 = { areaid2, name }, ... }
 }
@@ -30,7 +38,9 @@ function MyAreaHelper:getRandomAirPositionInArea (areaid)
 end
 
 function MyAreaHelper:initAreas ()
-  self.playerInHomeAreaId = AreaHelper:getAreaByPos(self.playerInHomePos)
+  for i, v in ipairs(self.monsterPositions) do
+    table.insert(self.monsterAreas, AreaHelper:getAreaByPos(v))
+  end
 end
 
 function MyAreaHelper:initShowToastAreas ()

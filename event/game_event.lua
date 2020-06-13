@@ -16,6 +16,9 @@ end
 local startGame = function ()
   LogHelper:debug('开始游戏')
   MyBlockHelper:initBlocks()
+  MonsterHelper:init()
+  TimerHelper.timerid = TimerHelper:createTimerIfNotExist(MyActor.timername, TimerHelper.timerid)
+  TimerHelper:startForwardTimer(TimerHelper.timerid)
 end
 
 -- 无参数
@@ -47,14 +50,7 @@ local atSecond = function (eventArgs)
   LogHelper:call(function ()
     MyTimeHelper:doPerSecond(second)
     MyPlayerHelper:updateEveryPlayerPositions()
-
-    if (second == 1) then
-      TimerHelper.timerid = TimerHelper:createTimerIfNotExist(MyActor.timername, TimerHelper.timerid)
-      TimerHelper:startForwardTimer(TimerHelper.timerid)
-    end
-
   end)
-  
 end
 
 ScriptSupportEvent:registerEvent([=[Game.AnyPlayer.EnterGame]=], playerEnterGame) -- 玩家进入游戏

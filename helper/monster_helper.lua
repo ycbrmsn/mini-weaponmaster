@@ -2,7 +2,12 @@
 MonsterHelper = {
   monsters = {}, -- objid -> actor
   forceDoNothingMonsters = {}, -- objid -> times 禁锢次数
-  sealedMonsters = {} -- objid -> times
+  sealedMonsters = {}, -- objid -> times
+  monsterInfos = {
+    { 8, 7 }, { 9, 7 }, { 10, 7 }, { 11, 5 }, 
+    { 12, 5 }, { 13, 5 }, { 14, 1 }
+  },
+  monsterActors = {}
 }
 
 function MonsterHelper:addMonster (objid, o)
@@ -26,23 +31,26 @@ function MonsterHelper:getMonsterByObjid (objid)
 end
 
 function MonsterHelper:init ()
-  qiangdaoXiaotoumu = QiangdaoXiaotoumu:new()
-  qiangdaoLouluo = QiangdaoLouluo:new()
-  wolf = Wolf:new()
-  qiangdaoXiaotoumu:generateMonsters()
-  qiangdaoLouluo:generateMonsters()
-  wolf:generateMonsters()
+  MyAreaHelper:initAreas()
   self:initMonsters()
+  MyTimeHelper:repeatUtilSuccess(999, 'generate', function ()
+    for i, v in ipairs(MyAreaHelper.monsterAreas) do
+      local objids = AreaHelper:getAllCreaturesInAreaId(v)
+      local num = self.monsterInfos[i][2]
+      if (not(objids) or #objids < num) then
+        local actorid = self.monsterInfos[i][1]
+        for i = 1, num - #objids do
+          local pos = MyAreaHelper:getRandomAirPositionInArea(v)
+          WorldHelper:spawnCreature(pos.x, pos.y, pos.z, actorid, 1)
+        end
+      end
+    end
+    return false
+  end, 60)
 end
 
 function MonsterHelper:initMonsters ()
-  -- LogHelper:debug('初始化怪物开始')
-  local monsters = { qiangdaoXiaotoumu, qiangdaoLouluo, wolf }
-  for i, v in ipairs(monsters) do
-    MyTimeHelper:initActor(v)
-    -- LogHelper:debug('初始化', v:getName(), '完成')
-  end
-  LogHelper:debug('初始化怪物结束')
+  self.monsterActors = { Chick:new(), Pig:new(), Ox:new(), Wolf:new(), Bear:new(), Dragon:new(), BigDragon:new() }
 end
 
 function MonsterHelper:getExp (playerid, objid)
@@ -50,8 +58,7 @@ function MonsterHelper:getExp (playerid, objid)
   if (not(actorid)) then
     return 0
   end
-  local monsterModels = { wolf, qiangdaoLouluo, qiangdaoXiaotoumu }
-  for i, v in ipairs(monsterModels) do
+  for i, v in ipairs(self.monsterActors) do
     if (v.actorid == actorid) then
       return self:calExp(playerid, v.expData)
     end
