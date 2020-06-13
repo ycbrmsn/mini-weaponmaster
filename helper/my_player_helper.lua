@@ -71,6 +71,15 @@ function MyPlayerHelper:playerDefeatActor (playerid, objid)
   player:gainExp(exp)
 end
 
+-- 玩家死亡
+function MyPlayerHelper:playerDie (objid)
+  -- 检测技能是否正在释放
+  if (MyItemHelper:isDelaySkillUsing(objid, '坠星')) then -- 技能释放中
+    FallStarBow:cancelSkill(objid)
+    return
+  end
+end
+
 function MyPlayerHelper:getAllPlayers ()
   return self.players
 end

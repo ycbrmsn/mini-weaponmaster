@@ -95,6 +95,14 @@ local playerBeHurt = function (eventArgs)
   end)
 end
 
+-- eventobjid, toobjid
+local playerDie = function (eventArgs)
+  local objid = eventArgs['eventobjid']
+  LogHelper:call(function ()
+    MyPlayerHelper:playerDie(objid)
+  end)
+end
+
 -- eventobjid, toobjid, itemid, itemnum
 local playerSelectShortcut = function (eventArgs)
   local objid = eventArgs['eventobjid']
@@ -143,6 +151,7 @@ ScriptSupportEvent:registerEvent([=[Player.DamageActor]=], playerDamageActor) --
 -- ScriptSupportEvent:registerEvent([=[Player.ChangeAttr]=], playerChangeAttr) -- 属性变化
 ScriptSupportEvent:registerEvent([=[Player.DefeatActor]=], playerDefeatActor) -- 打败目标
 ScriptSupportEvent:registerEvent([=[Player.BeHurt]=], playerBeHurt) -- 受到伤害
+ScriptSupportEvent:registerEvent([=[Player.Die]=], playerDie) -- 玩家死亡
 ScriptSupportEvent:registerEvent([=[Player.SelectShortcut]=], playerSelectShortcut) -- 选择快捷栏
 ScriptSupportEvent:registerEvent([=[Player.ShortcutChange]=], playerShortcutChange) -- 快捷栏变化
 ScriptSupportEvent:registerEvent([=[Player.MotionStateChange]=], playerMotionStateChange) -- 运动状态改变
