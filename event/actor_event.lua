@@ -35,7 +35,7 @@ local actorDie = function (eventArgs)
   local toobjid = eventArgs['toobjid']
   LogHelper:call(function ()
     MonsterHelper:actorDie(objid, toobjid)
-    MyStoryHelper:actorDieEvent(objid)
+    -- MyStoryHelper:actorDieEvent(objid)
   end)
 end
 

@@ -54,16 +54,20 @@ function MonsterHelper:initMonsters ()
 end
 
 function MonsterHelper:getExp (playerid, objid)
-  local actorid = CreatureHelper:getActorID(objid)
-  if (not(actorid)) then
+  if (ActorHelper:isPlayer(objid)) then -- 玩家
+    return 100
+  else
+    local actorid = CreatureHelper:getActorID(objid)
+    if (not(actorid)) then
+      return 0
+    end
+    for i, v in ipairs(self.monsterActors) do
+      if (v.actorid == actorid) then
+        return self:calExp(playerid, v.expData)
+      end
+    end
     return 0
   end
-  for i, v in ipairs(self.monsterActors) do
-    if (v.actorid == actorid) then
-      return self:calExp(playerid, v.expData)
-    end
-  end
-  return 0
 end
 
 function MonsterHelper:calExp (playerid, expData)
@@ -120,14 +124,6 @@ function MonsterHelper:actorDie (objid, toobjid)
   local pos = MyPosition:new(ActorHelper:getPosition(objid))
   if (actorid >= 2 and actorid <= 7) then -- 新手村的人物
     WorldHelper:spawnCreature(pos.x, pos.y, pos.z, actorid, 1)
-  else
-    local monsterModels = { wolf, qiangdaoXiaotoumu, qiangdaoLouluo }
-    for i, v in ipairs(monsterModels) do
-      if (v.actorid == actorid) then
-        self:createFallOff(v, pos)
-        break
-      end
-    end
   end
 end
 

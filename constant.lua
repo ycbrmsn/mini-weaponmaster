@@ -4,7 +4,8 @@ MyConstant = {
 
   -- 道具ID
   ITEM = {
-    COIN_ID = 4101, -- 铜板ID
+    COIN_ID = 4108, -- 铜板ID
+    SILVER_ID = 4136 -- 银子ID
   },
   WEAPON = {
     ARROW_ID = 4134, -- 箭矢ID

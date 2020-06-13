@@ -196,7 +196,7 @@ function MyActorHelper:leaveArea (objid, areaid)
       BlockHelper:closeDoor(doorPos)
     end
   end
-  MyStoryHelper:actorLeaveArea(objid, areaid)
+  -- MyStoryHelper:actorLeaveArea(objid, areaid)
 end
 
 -- 玩家点击生物

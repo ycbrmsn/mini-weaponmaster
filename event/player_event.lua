@@ -42,7 +42,6 @@ end
 local playerClickActor = function (eventArgs)
   local objid = eventArgs['eventobjid']
   local toobjid = eventArgs['toobjid']
-  -- local actorid = CreatureHelper:getActorID(toobjid)
   LogHelper:call(function ()
     MyActorHelper:playerClickActor(objid, toobjid)
   end)
@@ -55,9 +54,8 @@ local playerAddItem = function (eventArgs)
   local toobjid = eventArgs['toobjid']
   local itemid = eventArgs['itemid']
   local itemnum = eventArgs['itemnum']
-  -- LogHelper:info(objid, ',', toobjid, ',', itemid, ',', itemnum)
   LogHelper:call(function ()
-    MyStoryHelper:playerAddItem(objid, itemid, itemnum)
+    -- MyStoryHelper:playerAddItem(objid, itemid, itemnum)
   end)
 end
 
@@ -92,7 +90,7 @@ local playerBeHurt = function (eventArgs)
   LogHelper:call(function ()
     local hp = PlayerHelper:getHp(objid)
     if (hp == 1) then
-      MyStoryHelper:playerBadHurt(objid)
+      -- MyStoryHelper:playerBadHurt(objid)
     end
   end)
 end
