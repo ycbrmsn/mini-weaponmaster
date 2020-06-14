@@ -13,8 +13,8 @@ CongealFrostKnife = MyWeapon:new(MyWeaponAttr.congealFrostKnife)
 
 -- 攻击命中冰冻
 function CongealFrostKnife:attackHit (objid, toobjid)
-  local bufflv = math.floor(self.level / 3 + 1)
-  local customticks = math.floor(self.level / 3 + 1) * 5 * 20 -- 每秒20帧
+  local bufflv = self.level + 1
+  local customticks = 5 * 20 -- 每秒20帧
   ActorHelper:addBuff(toobjid, 45, bufflv, customticks)
 end
 
@@ -32,8 +32,8 @@ function RejuvenationKnife:useItem (objid)
     return
   end
   MyItemHelper:recordUseSkill(objid, self.id, self.cd)
-  local bufflv = math.floor(self.level / 3 + 1)
-  local customticks = math.floor(self.level / 3 + 2) * 5 * 20 -- 每秒20帧
+  local bufflv = self.level + 1
+  local customticks = 5 * 20 -- 每秒20帧
   ActorHelper:addBuff(objid, 50, bufflv, customticks) -- 快速生命恢复
 end
 
@@ -51,7 +51,8 @@ function SealDemonKnife:useItem (objid)
     return
   end
   local playerPos = player:getMyPosition()
-  local areaid = AreaHelper:createAreaRect(playerPos, { x = 3, y = 3, z = 3 })
+  local skillRange = self.skillRange + self.level * self.addSkillRangePerLevel
+  local areaid = AreaHelper:createAreaRect(playerPos, { x = skillRange, y = skillRange, z = skillRange })
   local objids = MyActorHelper:getAllOtherTeamActorsInAreaId(objid, areaid)
   AreaHelper:destroyArea(areaid)
   if (#objids > 0) then
@@ -63,7 +64,7 @@ function SealDemonKnife:useItem (objid)
       for i, v in ipairs(objids) do
         MyActorHelper:cancelSealActor(v)
       end
-    end, self.level + 5)
+    end, self.skillTime + self.level * self.addSkillTimePerLevel)
   else
     ChatHelper:sendSystemMsg('封魔技能有效范围内未发现目标', objid)
   end

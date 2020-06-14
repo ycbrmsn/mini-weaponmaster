@@ -29,8 +29,8 @@ FireTipSpear = MyWeapon:new(MyWeaponAttr.fireTipSpear)
 -- 攻击命中着火
 function FireTipSpear:attackHit (objid, toobjid)
   self:reduceStrength(objid)
-  local bufflv = math.floor(self.level / 3 + 1)
-  local customticks = math.floor(self.level / 3 + 1) * 5 * 20 -- 每秒20帧
+  local bufflv = self.level + 1
+  local customticks = 5 * 20 -- 每秒20帧
   ActorHelper:addBuff(toobjid, 33, bufflv, customticks)
 end
 
@@ -57,12 +57,14 @@ function OverlordSpear:useItem (objid)
   local curHp = PlayerHelper:getHp(objid)
   local maxHp = PlayerHelper:getMaxHp(objid)
   if (curHp < maxHp) then -- 恢复损失生命的20%
-    local hp = curHp + math.floor((maxHp - curHp) * 0.2)
+    local coverHp = self.coverHp + self.level * addCoverHpPerLevel
+    local hp = curHp + math.floor((maxHp - curHp) * coverHp)
     PlayerHelper:setHp(objid, hp)
   end
   -- 击退周围3格内的敌对生物
   local playerPos = player:getMyPosition()
-  local areaid = AreaHelper:createAreaRect(playerPos, { x = 3, y = 3, z = 3 })
+  local skillRange = self.skillRange + self.level * self.addSkillRangePerLevel
+  local areaid = AreaHelper:createAreaRect(playerPos, { x = skillRange, y = skillRange, z = skillRange })
   local objids = MyActorHelper:getAllOtherTeamActorsInAreaId(objid, areaid)
   AreaHelper:destroyArea(areaid)
   for i, v in ipairs(objids) do
@@ -90,7 +92,8 @@ function ShockSoulSpear:useItem (objid)
     return
   end
   local playerPos = player:getMyPosition()
-  local areaid = AreaHelper:createAreaRect(playerPos, { x = 3, y = 3, z = 3 })
+  local skillRange = self.skillRange + self.level * self.addSkillRangePerLevel
+  local areaid = AreaHelper:createAreaRect(playerPos, { x = skillRange, y = skillRange, z = skillRange })
   local objids = MyActorHelper:getAllOtherTeamActorsInAreaId(objid, areaid)
   AreaHelper:destroyArea(areaid)
   if (#objids > 0) then
@@ -102,7 +105,7 @@ function ShockSoulSpear:useItem (objid)
       for i, v in ipairs(objids) do
         MyActorHelper:cancelImprisonActor(v)
       end
-    end, self.level + 1)
+    end, self.skillTime + self.level * self.addSkillTimePerLevel)
   else
     ChatHelper:sendSystemMsg('慑魂技能有效范围内未发现目标', objid)
   end

@@ -13,8 +13,8 @@ SwallowSoulBow = MyWeapon:new(MyWeaponAttr.swallowSoulBow)
 
 -- 攻击命中中毒
 function SwallowSoulBow:attackHit (objid, toobjid)
-  local bufflv = math.floor(self.level / 3 + 1)
-  local customticks = math.floor(self.level / 3 + 1) * 5 * 20 -- 每秒20帧
+  local bufflv = self.level + 1
+  local customticks = 5 * 20 -- 每秒20帧
   ActorHelper:addBuff(toobjid, 34, bufflv, customticks)
 end
 
@@ -54,7 +54,8 @@ function FallStarBow:getObjids (objid, index)
     return false
   end
   local playerPos = player:getMyPosition()
-  local areaid = AreaHelper:createAreaRect(playerPos, { x = 8, y = 4, z = 8 })
+  local skillRange = self.skillRange + self.level * self.addSkillRangePerLevel
+  local areaid = AreaHelper:createAreaRect(playerPos, { x = skillRange, y = 4, z = skillRange })
   local objids = MyActorHelper:getAllOtherTeamActorsInAreaId(objid, areaid)
   AreaHelper:destroyArea(areaid)
   local msg
@@ -140,7 +141,7 @@ function OneByOneBow:useItem2 (objid)
   end
   -- 查询背包内箭矢数量
   local num = BackpackHelper:getItemNumAndGrid(objid, MyConstant.WEAPON.ARROW_ID)
-  local times = self.level + 3
+  local times = self.arrowNum + self.level * self.addArrowNumPerLevel
   if (num < times) then
     ChatHelper:sendSystemMsg('箭矢数量不足', objid)
     return false

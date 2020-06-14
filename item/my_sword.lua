@@ -43,7 +43,8 @@ function StrongAttackSword:useItem (objid)
   end
   local playerPos = player:getMyPosition()
   -- 循环以距离玩家正面1米递增的间隔点开始，作为中心点，扩大1格，查找生物
-  for i = 1, self.level + 1 do
+  local distanceTimes = self.distance + self.level * self.addDistancePerLevel
+  for i = 1, distanceTimes do
     local pos = MathHelper:getDistancePosition(player:getMyPosition(), player:getFaceYaw(), i)
     local areaid = AreaHelper:createNineCubicArea(pos)
     local objids = MyActorHelper:getAllOtherTeamActorsInAreaId(objid, areaid)
@@ -107,7 +108,7 @@ function ChaseWindSword:useItem (objid)
     else
       self:recoverWeapon(objid, self, curDur)
     end
-  end, self.level + 2, weaponType)
+  end, self.flyTime + self.level * self.addFlyTimePerLevel, weaponType)
   MyItemHelper:recordProjectile(projectileid, objid, self, { pos = playerPos, curDur = curDur, weaponType = weaponType })
 end
 
