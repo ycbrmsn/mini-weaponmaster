@@ -13,7 +13,7 @@ DrinkBloodSword = MyWeapon:new(MyWeaponAttr.drinkBloodSword)
 
 -- 攻击命中恢复血量
 function DrinkBloodSword:attackHit (objid, toobjid)
-  local hp = self.hp + math.floor(self.addHpPerLevel * self.level)
+  local hp = self.hp + self.addHpPerLevel * self.level
   local toHp
   if (ActorHelper:isPlayer(toobjid)) then -- 命中玩家
     toHp = PlayerHelper:getHp(toobjid)
@@ -66,7 +66,7 @@ function StrongAttackSword:useItem (objid)
         -- 击退效果
         MyActorHelper:appendSpeed(targetObjid, 2, player:getMyPosition())
         -- 伤害
-        player:damageActor(targetObjid, self.attack * 2)
+        player:damageActor(targetObjid, self.attack * (self.multiple + self.level * self.addMultiplePerLevel))
         break
       end
     else
@@ -127,7 +127,8 @@ function ChaseWindSword:projectileHit (projectileInfo, toobjid, blockid, pos)
     if (not(MyActorHelper:isTheSameTeamActor(objid, toobjid))) then -- 敌对生物，则造成伤害
       local toPos = MyActorHelper:getMyPosition(toobjid)
       local distance = WorldHelper:calcDistance(playerPos, toPos)
-      player:damageActor(toobjid, math.floor(item.attack + distance * 5))
+      local dam = item.damage + item.level * item.addDamagePerLevel
+      player:damageActor(toobjid, math.floor(item.attack + distance * dam))
     end
   elseif (blockid > 0) then -- 命中方块
     self:moveAndRecoverWeapon(player, objid, playerPos, pos, item, curDur)

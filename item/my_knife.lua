@@ -33,7 +33,7 @@ function RejuvenationKnife:useItem (objid)
   end
   MyItemHelper:recordUseSkill(objid, self.id, self.cd)
   local bufflv = self.level + 1
-  local customticks = 5 * 20 -- 每秒20帧
+  local customticks = (self.skillTime + self.level * self.addSkillTimePerLevel) * 20 -- 每秒20帧
   ActorHelper:addBuff(objid, 50, bufflv, customticks) -- 快速生命恢复
 end
 
