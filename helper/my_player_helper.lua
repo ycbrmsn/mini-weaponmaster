@@ -40,9 +40,10 @@ function MyPlayerHelper:initPlayer (objid)
   end
   local player = self:addPlayer(objid)
   if (maxLevel > 2) then
-    player.totalLevel = maxLevel - 1
-    local msg = StringHelper:concat('当前房间内玩家最高等级为', maxLevel, '，因此你的初始等级为', maxLevel - 1, '级')
+    local exp = (maxLevel - 2) * 100
+    local msg = StringHelper:concat('当前房间内玩家最高等级为', maxLevel, '，因此你可获得经验', exp)
     ChatHelper:sendSystemMsg(msg, objid)
+    player:gainExp(exp)
   end
 end
 
@@ -65,8 +66,15 @@ end
 
 -- 玩家造成伤害
 function MyPlayerHelper:playerDamageActor (objid, toobjid)
-  local actorname = CreatureHelper:getActorName(toobjid)
-  local hp = CreatureHelper:getHp(toobjid)
+  local actorname, hp
+  if (ActorHelper:isPlayer(toobjid)) then -- 命中玩家
+    local player = MyPlayerHelper:getPlayer(toobjid)
+    actorname = player:getName()
+    hp = PlayerHelper:getHp(toobjid)
+  else
+    actorname = CreatureHelper:getActorName(toobjid)
+    hp = CreatureHelper:getHp(toobjid)
+  end
   if (hp and hp <= 0) then
     self:showToast(objid, StringHelper:concat(actorname, '已死亡'))
   else
