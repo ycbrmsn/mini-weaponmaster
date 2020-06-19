@@ -101,7 +101,7 @@ function FallStarBow:useSkill (objid, index)
       local initPos = MyPosition:new(targetPos.x, targetPos.y + 0.2, targetPos.z)
       local dirVector3 = MyVector3:new(0, -1, 0)
       local projectileid = WorldHelper:spawnProjectileByDirPos(objid, itemid, initPos, dirVector3) -- 创建投掷物
-      MyItemHelper:recordProjectile(projectileid, objid, self, { hurt = self.attack }) -- 记录伤害
+      MyItemHelper:recordProjectile(projectileid, objid, self, { hurt = self.attack - MyConstant.PROJECTILE_HURT }) -- 记录伤害
     end
     self:useSkill(objid, index + 1)
   end, 2)
@@ -185,9 +185,16 @@ function OneByOneBow:projectileHit (projectileInfo, toobjid, blockid, pos)
     MyActorHelper:appendSpeed(toobjid, 1, player:getMyPosition()) -- 冲击
     -- 判断是否是敌对生物
     if (not(MyActorHelper:isTheSameTeamActor(objid, toobjid))) then -- 敌对生物，则造成伤害
-      local hurt = item.attack - self:addHitTimes(objid) * 10 -- 命中伤害10点递减
-      if (hurt < 10) then -- 最低伤害10点
-        hurt = 10
+      local key = MyPlayerHelper:generateDamageKey(objid, toobjid)
+      local isHurt = MyTimeHelper:getFrameInfo(key)
+      local superfluousHurt = 0 -- 多余的伤害
+      if (isHurt) then -- 造成伤害事件发生了
+        superfluousHurt = MyConstant.PROJECTILE_HURT
+      end
+      local hurt = item.attack - superfluousHurt - self:addHitTimes(objid) * 10 -- 命中伤害10点递减
+      local minHurt = 10 - superfluousHurt
+      if (hurt < minHurt) then -- 最低伤害10点
+        hurt = minHurt
       end
       player:damageActor(toobjid, hurt)
     end

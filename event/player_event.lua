@@ -63,6 +63,7 @@ end
 local playerAttackHit = function (eventArgs)
   local objid = eventArgs['eventobjid']
   local toobjid = eventArgs['toobjid']
+  -- LogHelper:debug('攻击命中', MyTimeHelper.frame)
   LogHelper:call(function ()
     MyPlayerHelper:playerAttackHit(objid, toobjid)
   end)
@@ -72,6 +73,7 @@ end
 local playerDamageActor = function (eventArgs)
   local objid = eventArgs['eventobjid']
   local toobjid = eventArgs['toobjid']
+  -- LogHelper:debug('伤害生物', MyTimeHelper.frame)
   LogHelper:call(function ()
     MyPlayerHelper:playerDamageActor(objid, toobjid)
   end)
@@ -79,6 +81,7 @@ end
 
 -- eventobjid, toobjid
 local playerDefeatActor = function (eventArgs)
+  -- LogHelper:debug('击败生物', MyTimeHelper.frame)
   LogHelper:call(function ()
     MyPlayerHelper:playerDefeatActor(eventArgs.eventobjid, eventArgs.toobjid)
   end)

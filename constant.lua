@@ -1,6 +1,6 @@
 -- 常量
 MyConstant = {
-  PROJECTILE_HURT = 0, -- 通用投掷物固定伤害
+  PROJECTILE_HURT = 6, -- 通用投掷物固定伤害
 
   -- 道具ID
   ITEM = {

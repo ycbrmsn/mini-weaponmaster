@@ -53,7 +53,7 @@ function StrongAttackSword:useItem (objid)
       MyItemHelper:recordUseSkill(objid, self.id, self.cd)
       local tempDistance, targetObjid
       for ii, vv in ipairs(objids) do
-        local distance = WorldHelper:calcDistance(playerPos, MyActorHelper:getMyPosition(vv))
+        local distance = MathHelper:getDistance(playerPos, MyActorHelper:getMyPosition(vv))
         if (not(tempDistance) or distance < tempDistance) then
           tempDistance = distance
           targetObjid = vv
@@ -126,9 +126,11 @@ function ChaseWindSword:projectileHit (projectileInfo, toobjid, blockid, pos)
     -- 判断是否是敌对生物
     if (not(MyActorHelper:isTheSameTeamActor(objid, toobjid))) then -- 敌对生物，则造成伤害
       local toPos = MyActorHelper:getMyPosition(toobjid)
-      local distance = WorldHelper:calcDistance(playerPos, toPos)
+      local distance = MathHelper:getDistance(playerPos, toPos)
       local dam = item.damage + item.level * item.addDamagePerLevel
-      player:damageActor(toobjid, math.floor(item.attack + distance * dam))
+      local damage = math.floor(item.attack + distance * dam - MyConstant.PROJECTILE_HURT)
+      LogHelper:debug(math.floor(distance))
+      player:damageActor(toobjid, damage)
     end
   elseif (blockid > 0) then -- 命中方块
     self:moveAndRecoverWeapon(player, objid, playerPos, pos, item, curDur)
