@@ -1,6 +1,8 @@
 -- 字符串工具类
 StringHelper = {
-  hourName = { '子时', '丑时', '寅时', '卯时', '辰时', '巳时', '午时', '未时', '申时', '酉时', '戌时', '亥时' }
+  hourName = { '子时', '丑时', '寅时', '卯时', '辰时', '巳时', '午时', '未时', '申时', '酉时', '戌时', '亥时' },
+  numName = { [0] = '', [1] = '一', [2] = '二', [3] = '三', [4] = '四', [5] = '五', 
+    [6] = '六', [7] = '七', [8] = '八', [9] = '九', [10] = '拾' }
 }
 
 --[[
@@ -145,4 +147,70 @@ function StringHelper:getHourName (hour)
       end
     end
   end
+end
+
+-- 获得模板结果
+function StringHelper:getTemplateResult (template, map)
+  local temp = template
+  if (map) then
+    for k, v in pairs(map) do
+      temp = string.gsub(temp, '{' .. k .. '}', v)
+    end
+  end
+  return temp
+end
+
+-- 数字转化为字符串
+function StringHelper:number2String (num)
+  if (type(num) == 'number') then
+    if (num < 10000) then
+      return num .. ''
+    elseif (num < 100000000) then
+      return '超过' .. math.floor(num / 10000) .. '万'
+    end
+  else
+    return ''
+  end
+end
+
+-- 拆分字符串
+function StringHelper:split (szFullString, szSeparator)
+  local nFindStartIndex = 1
+  local nSplitIndex = 1
+  local nSplitArray = {}
+  while (true) do
+    local nFindLastIndex = string.find(szFullString, szSeparator, nFindStartIndex)
+    if (not nFindLastIndex) then
+      nSplitArray[nSplitIndex] = string.sub(szFullString, nFindStartIndex, string.len(szFullString))
+      break
+    end
+    nSplitArray[nSplitIndex] = string.sub(szFullString, nFindStartIndex, nFindLastIndex - 1)
+    nFindStartIndex = nFindLastIndex + string.len(szSeparator)
+    nSplitIndex = nSplitIndex + 1
+  end
+  return nSplitArray
+end
+
+-- 小整数转中文
+function StringHelper:int2Chinese (num)
+  local result
+  if (num < -99 or num > 99) then
+    return num .. ''
+  elseif (num == 0) then
+    return '零'
+  end
+  if (num < 0) then
+    result = '负'
+  else
+    result = ''
+  end
+  local temp = math.abs(num)
+  if (temp > 19) then
+    result = result .. self.numName[math.floor(temp / 10)]
+  end
+  if (temp > 9) then
+    result = result .. self.numName[10]
+  end
+  result = result .. self.numName[temp % 10]
+  return result
 end

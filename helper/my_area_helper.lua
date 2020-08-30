@@ -1,89 +1,50 @@
 -- 我的区域工具类
 MyAreaHelper = {
-  monsterPositions = {
-    MyPosition:new(-87, 7, -23), -- 小鸡
-    MyPosition:new(-86, 7, -41),
-    MyPosition:new(-85, 7, -66),
-    MyPosition:new(12, 7, -26),
-    MyPosition:new(10, 7, -46),
-    MyPosition:new(11, 7, -63),
-    MyPosition:new(-37, 7, -65), -- 大龙
-  },
-  monsterAreas = {},
+  doorPositionData = {},
+  doorPositions = {},
   outVillagePos = MyPosition:new(-36, 7, -27),
-  maxRandomTimes = 10,
   showToastAreas = {} -- { areaid1 = { areaid2, name }, ... }
 }
 
-function MyAreaHelper:removeToArea (myActor)
-  if (myActor and myActor.wants) then
-    local want = myActor.wants[1]
-    if (want.toAreaId) then
-      AreaHelper:destroyArea(want.toAreaId)
-    end
-  end
-end
-
-function MyAreaHelper:isAirArea (pos)
-  return BlockHelper:isAirBlock(pos.x, pos.y, pos.z) and BlockHelper:isAirBlock(pos.x, pos.y + 1, pos.z)
-end
-
-function MyAreaHelper:getRandomAirPositionInArea (areaid)
-  local pos = AreaHelper:getRandomPos(areaid)
-  local times = 1
-  while (not(self:isAirArea(pos)) and times < self.maxRandomTimes) do
-    pos = AreaHelper:getRandomPos(areaid)
-    times = times + 1
-  end
-  return pos
-end
-
-function MyAreaHelper:initAreas ()
-  for i, v in ipairs(self.monsterPositions) do
-    table.insert(self.monsterAreas, AreaHelper:getAreaByPos(v))
-  end
+-- 初始化
+function MyAreaHelper:init ()
+  self:initDoorAreas()
+  self:initShowToastAreas()
+  -- body
   self.outVillageArea = AreaHelper:getAreaByPos(self.outVillagePos)
 end
 
+-- 初始化显示飘窗区域
 function MyAreaHelper:initShowToastAreas ()
-  local arr = { wolf, qiangdaoLouluo }
-  for i, v in ipairs(arr) do
-    self.showToastAreas[v.areaids[2]] = { v.areaids[1], v.areaName }
-  end
-  for i, v in ipairs(guard.initAreas) do
-    if (i >= 5) then
-      break
-    end
-    self.showToastAreas[guard.initAreas2[i]] = { v.areaid, '风颖城' }
-  end
+  -- local arr = { wolf, ox }
+  -- for i, v in ipairs(arr) do
+  --   if (v.generate) then -- 如果需要生成怪物
+  --     AreaHelper:addToastArea(v.areaids[2], { v.areaids[1], v.areaName, v.generate })
+  --   else
+  --     AreaHelper:addToastArea(v.areaids[2], { v.areaids[1], v.areaName })
+  --   end
+  -- end
 end
 
-function MyAreaHelper:showToastArea (objid, areaid)
-  for k, v in pairs(self.showToastAreas) do
-    if (k == areaid) then
-      local player = MyPlayerHelper:getPlayer(objid)
-      if (player.prevAreaId and player.prevAreaId == v[1]) then
-        MyPlayerHelper:showToast(objid, v[2])
-      end
-      break
-    end
+-- 初始化所有actor可打开的门的位置
+function MyAreaHelper:initDoorAreas ()
+  for i, v in ipairs(self.doorPositionData) do
+    local pos = MyPosition:new(v[1], v[2], v[3])
+    local areaid = AreaHelper:getAreaByPos(pos)
+    table.insert(AreaHelper.allDoorAreas, areaid, pos)
   end
 end
 
-function MyAreaHelper:playerEnterArea (objid, areaid)
-  -- MyStoryHelper:playerEnterArea(objid, areaid)
-  local myPlayer = MyPlayerHelper:getPlayer(objid)
-  if (areaid == myPlayer.toAreaId) then -- 玩家自动前往地点
-    AreaHelper:destroyArea(areaid)
-    myPlayer.action:runAction()
+-- 获取所有的门位置
+function MyAreaHelper:getDoorPositions ()
+  return self.doorPositions
+end
+
+-- 根据位置数据初始化区域
+function MyAreaHelper:initAreaByData (data, areas)
+  for i, v in ipairs(data) do
+    local pos = MyPosition:new(v[1], v[2], v[3])
+    local areaid = AreaHelper:getAreaByPos(pos)
+    table.insert(areas, areaid)
   end
-  myPlayer.prevAreaId = areaid
-end
-
-function MyAreaHelper:playerLeaveArea (objid, areaid)
-  -- MyStoryHelper:playerLeaveArea(objid, areaid)
-end
-
-function MyAreaHelper:creatureEnterArea (objid)
-  
 end

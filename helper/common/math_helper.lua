@@ -70,5 +70,40 @@ end
 
 -- 两点之间的距离
 function MathHelper:getDistance (pos1, pos2)
+  if (type(pos1) == 'number') then
+    pos1 = ActorHelper:getMyPosition(pos1)
+  end
+  if (type(pos2) == 'number') then
+    pos2 = ActorHelper:getMyPosition(pos2)
+  end
   return self:getVector3Length(pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z)
+end
+
+-- 矩形区域范围posBeg, posEnd
+function MathHelper:getRectRange (pos, dim)
+  return MyPosition:new(pos.x - dim.x, pos.y - dim.y, pos.z - dim.z), 
+    MyPosition:new(pos.x + dim.x, pos.y + dim.y, pos.z + dim.z)
+end
+
+-- 一个生物处于玩家的哪个角度，正前方为0，左负右正，正后方为180
+function MathHelper:getRelativePlayerAngle (objid, toobjid)
+  local player = PlayerHelper:getPlayer(objid)
+  local playerPos = player:getMyPosition()
+  local aimPos = MyPosition:new(PlayerHelper:getAimPos(objid))
+  local leftPos = player:getDistancePosition(1, -90) -- 左边点
+  local pos = ActorHelper:getMyPosition(toobjid)
+  local vx, vz = pos.x - playerPos.x, pos.z - playerPos.z
+  local angle1 = self:getTwoVector2Angle(aimPos.x - playerPos.x, aimPos.z - playerPos.z, vx, vz) -- 与前方向量夹角
+  local angle2 = self:getTwoVector2Angle(leftPos.x - playerPos.x, leftPos.z - playerPos.z, vx, vz) -- 与左方向量夹角
+  local angle
+  if (angle1 <= 90 and angle2 < 90) then -- 左前
+    angle = -angle1
+  elseif (angle1 <= 90 and angle2 >= 90) then -- 右前
+    angle = angle1
+  elseif (angle1 > 90 and angle2 < 90) then -- 左后
+    angle = -angle1
+  else -- 右后
+    angle = angle1
+  end
+  return math.floor(angle)
 end

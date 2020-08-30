@@ -43,16 +43,16 @@ function OverlordSpear:attackHit (objid, toobjid)
 end
 
 function OverlordSpear:useItem (objid)
-  local player = MyPlayerHelper:getPlayer(objid)
+  local player = PlayerHelper:getPlayer(objid)
   if (not(player:ableUseSkill('霸王'))) then
     return false
   end
-  local ableUseSkill = MyItemHelper:ableUseSkill(objid, self.id, self.cd)
+  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
   if (not(ableUseSkill)) then
-    MyPlayerHelper:showToast(objid, '霸王技能冷却中')
+    PlayerHelper:showToast(objid, '霸王技能冷却中')
     return
   end
-  MyItemHelper:recordUseSkill(objid, self.id, self.cd)
+  ItemHelper:recordUseSkill(objid, self.id, self.cd)
   ActorHelper:clearAllBadBuff(objid) -- 清除全部减益buff
   local curHp = PlayerHelper:getHp(objid)
   local maxHp = PlayerHelper:getMaxHp(objid)
@@ -65,12 +65,12 @@ function OverlordSpear:useItem (objid)
   local playerPos = player:getMyPosition()
   local skillRange = self.skillRange + self.level * self.addSkillRangePerLevel
   local areaid = AreaHelper:createAreaRect(playerPos, { x = skillRange, y = skillRange, z = skillRange })
-  local objids = MyActorHelper:getAllOtherTeamActorsInAreaId(objid, areaid)
+  local objids = ActorHelper:getAllOtherTeamActorsInAreaId(objid, areaid)
   AreaHelper:destroyArea(areaid)
   for i, v in ipairs(objids) do
-    MyActorHelper:appendSpeed(v, 4, playerPos)
+    ActorHelper:appendFixedSpeed(v, 4, playerPos)
   end
-  MyActorHelper:playAndStopBodyEffectById(objid, MyConstant.BODY_EFFECT.BOOM1)
+  ActorHelper:playAndStopBodyEffectById(objid, BaseConstant.BODY_EFFECT.BOOM1)
 end
 
 -- 慑魂枪
@@ -82,28 +82,28 @@ function ShockSoulSpear:attackHit (objid, toobjid)
 end
 
 function ShockSoulSpear:useItem (objid)
-  local player = MyPlayerHelper:getPlayer(objid)
+  local player = PlayerHelper:getPlayer(objid)
   if (not(player:ableUseSkill('慑魂'))) then
     return false
   end
-  local ableUseSkill = MyItemHelper:ableUseSkill(objid, self.id, self.cd)
+  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
   if (not(ableUseSkill)) then
-    MyPlayerHelper:showToast(objid, '慑魂技能冷却中')
+    PlayerHelper:showToast(objid, '慑魂技能冷却中')
     return
   end
   local playerPos = player:getMyPosition()
   local skillRange = self.skillRange + self.level * self.addSkillRangePerLevel
   local areaid = AreaHelper:createAreaRect(playerPos, { x = skillRange, y = skillRange, z = skillRange })
-  local objids = MyActorHelper:getAllOtherTeamActorsInAreaId(objid, areaid)
+  local objids = ActorHelper:getAllOtherTeamActorsInAreaId(objid, areaid)
   AreaHelper:destroyArea(areaid)
   if (#objids > 0) then
-    MyItemHelper:recordUseSkill(objid, self.id, self.cd)
+    ItemHelper:recordUseSkill(objid, self.id, self.cd)
     for i, v in ipairs(objids) do
-      MyActorHelper:imprisonActor(v)
+      ActorHelper:imprisonActor(v)
     end
-    MyTimeHelper:callFnFastRuns (function ()
+    TimeHelper:callFnFastRuns (function ()
       for i, v in ipairs(objids) do
-        MyActorHelper:cancelImprisonActor(v)
+        ActorHelper:cancelImprisonActor(v)
       end
     end, self.skillTime + self.level * self.addSkillTimePerLevel)
   else

@@ -1,7 +1,7 @@
 -- 怪物类
 
 -- 小鸡
-Chick = MyActor:new(8)
+Chick = BaseActor:new(8)
 
 function Chick:new ()
   local o = {
@@ -11,7 +11,7 @@ function Chick:new ()
       exp = 20
     },
     fallOff = {
-      { MyConstant.ITEM.COIN_ID, 1, 20 } -- 铜板
+      { MyMap.ITEM.COIN_ID, 1, 1, 20 } -- 铜板
     }
   }
   setmetatable(o, self)
@@ -20,7 +20,7 @@ function Chick:new ()
 end
 
 -- 小猪
-Pig = MyActor:new(9)
+Pig = BaseActor:new(9)
 
 function Pig:new ()
   local o = {
@@ -30,7 +30,7 @@ function Pig:new ()
       exp = 20
     },
     fallOff = {
-      { MyConstant.ITEM.COIN_ID, 1, 20 } -- 铜板
+      { MyMap.ITEM.COIN_ID, 1, 2, 20 } -- 铜板
     }
   }
   setmetatable(o, self)
@@ -39,7 +39,7 @@ function Pig:new ()
 end
 
 -- 小牛
-Ox = MyActor:new(10)
+Ox = BaseActor:new(10)
 
 function Ox:new ()
   local o = {
@@ -49,7 +49,7 @@ function Ox:new ()
       exp = 20
     },
     fallOff = {
-      { MyConstant.ITEM.COIN_ID, 1, 20 } -- 铜板
+      { MyMap.ITEM.COIN_ID, 1, 3, 20 } -- 铜板
     }
   }
   setmetatable(o, self)
@@ -58,7 +58,7 @@ function Ox:new ()
 end
 
 -- 小狼
-Wolf = MyActor:new(11)
+Wolf = BaseActor:new(11)
 
 function Wolf:new ()
   local o = {
@@ -68,7 +68,7 @@ function Wolf:new ()
       exp = 20
     },
     fallOff = {
-      { MyConstant.ITEM.COIN_ID, 1, 20 } -- 铜板
+      { MyMap.ITEM.COIN_ID, 1, 5, 20 } -- 铜板
     }
   }
   setmetatable(o, self)
@@ -77,7 +77,7 @@ function Wolf:new ()
 end
 
 -- 小熊
-Bear = MyActor:new(12)
+Bear = BaseActor:new(12)
 
 function Bear:new ()
   local o = {
@@ -87,7 +87,7 @@ function Bear:new ()
       exp = 20
     },
     fallOff = {
-      { MyConstant.ITEM.COIN_ID, 2, 20 } -- 铜板
+      { MyMap.ITEM.COIN_ID, 2, 6, 20 } -- 铜板
     }
   }
   setmetatable(o, self)
@@ -96,7 +96,7 @@ function Bear:new ()
 end
 
 -- 小龙
-Dragon = MyActor:new(13)
+Dragon = BaseActor:new(13)
 
 function Dragon:new ()
   local o = {
@@ -106,7 +106,7 @@ function Dragon:new ()
       exp = 20
     },
     fallOff = {
-      { MyConstant.ITEM.COIN_ID, 3, 20 } -- 铜板
+      { MyMap.ITEM.COIN_ID, 3, 8, 20 } -- 铜板
     }
   }
   setmetatable(o, self)
@@ -115,7 +115,7 @@ function Dragon:new ()
 end
 
 -- 大龙
-BigDragon = MyActor:new(14)
+BigDragon = BaseActor:new(14)
 
 function BigDragon:new ()
   local o = {
@@ -125,7 +125,7 @@ function BigDragon:new ()
       exp = 20
     },
     fallOff = {
-      { MyConstant.ITEM.COIN_ID, 5, 20 } -- 铜板
+      { MyMap.ITEM.COIN_ID, 5, 10, 20 } -- 铜板
     }
   }
   setmetatable(o, self)

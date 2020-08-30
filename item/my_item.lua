@@ -6,7 +6,7 @@ function MyItem:new (o)
   setmetatable(o, self)
   self.__index = self
   if (o.id) then
-    MyItemHelper:register(o)
+    ItemHelper:register(o)
   end
   return o
 end
@@ -14,7 +14,7 @@ end
 -- 创建道具
 function MyItem:newItem (playerid, num, disableThrow)
   num = num or 1
-  Backpack:addItem(playerid, self.id, num)
+  BackpackHelper:addItem(playerid, self.id, num)
   if (disableThrow) then -- 不可丢弃
     PlayerHelper:setItemDisableThrow(playerid, self.id)
   end
@@ -23,6 +23,20 @@ end
 -- 是否有道具
 function MyItem:hasItem (playerid, containEquip)
   return BackpackHelper:hasItem(playerid, self.id, containEquip)
+end
+
+-- 更新道具数量
+function MyItem:updateNum (playerid, num, disableThrow)
+  local curNum, arr1, arr2 = BackpackHelper:getItemNumAndGrid(playerid, self.id)
+  if (num == curNum) then -- 数量相同则不作处理
+    return
+  else
+    if (num > curNum) then -- 比当前多
+      self:newItem(playerid, num - curNum, disableThrow)
+    else -- 比当前少
+      BackpackHelper:removeGridItemByItemID(playerid, self.id, curNum - num)
+    end
+  end
 end
 
 -- 拿起道具(手上)
@@ -76,7 +90,7 @@ function MyWeapon:newLevel (id, level)
   setmetatable(o, self)
   self.__index = self
   if (o.id) then
-    MyItemHelper:register(o)
+    ItemHelper:register(o)
   end
   return o
 end
@@ -88,41 +102,58 @@ function MyWeapon:newLevels ()
 end
 
 function MyWeapon:pickUp (objid)
-  local player = MyPlayerHelper:getPlayer(objid)
+  local player = PlayerHelper:getPlayer(objid)
   player:changeAttr(self.attack, self.defense)
 end
 
 function MyWeapon:putDown (objid)
-  local player = MyPlayerHelper:getPlayer(objid)
+  local player = PlayerHelper:getPlayer(objid)
   player:changeAttr(-self.attack, -self.defense)
+end
+
+function MyWeapon:useItem (objid)
+  if (self.skillname) then
+    local player = PlayerHelper:getPlayer(objid)
+    if (not(player:ableUseSkill(self.skillname))) then
+      return
+    end
+  end
+  if (self.cd) then
+    local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
+    if (not(ableUseSkill)) then
+      self.cdReason = self.cdReason or '技能冷却中'
+      ChatHelper:sendSystemMsg(self.cdReason, objid)
+      return
+    end
+  end
+  self:useItem1(objid)
 end
 
 -- 减少体力
 function MyWeapon:reduceStrength (objid)
-  local player = MyPlayerHelper:getPlayer(objid)
+  local player = PlayerHelper:getPlayer(objid)
   player:reduceStrength(self.strength)
 end
 
 -- 江湖日志类
-local logPaperData = {
-  id = MyConstant.ITEM.LOG_PAPER_ID,
-  title = '江湖经历:',
-  content = '',
-  isChange = true -- 日志是否改变
-}
-
-LogPaper = MyItem:new(logPaperData)
+LogPaper = MyItem:new()
 
 function LogPaper:new ()
-  local o = {}
+  local o = {
+    id = MyMap.CUSTOM.ITEM.LOG_PAPER_ID,
+    title = '江湖经历:',
+    content = '',
+    isChange = true -- 日志是否改变
+  }
   setmetatable(o, self)
   self.__index = self
+  ItemHelper:register(o)
   return o
 end
 
 -- 更新日志 self.title .. 
 function LogPaper:updateLogs ()
-  local title, content = MyStoryHelper:getMainStoryTitleAndTip()
+  local title, content = StoryHelper:getMainStoryTitleAndTip()
   self.content = title .. '\n\t\t' .. content
   self.isChange = false
 end

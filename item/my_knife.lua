@@ -22,16 +22,16 @@ end
 RejuvenationKnife = MyWeapon:new(MyWeaponAttr.rejuvenationKnife)
 
 function RejuvenationKnife:useItem (objid)
-  local player = MyPlayerHelper:getPlayer(objid)
+  local player = PlayerHelper:getPlayer(objid)
   if (not(player:ableUseSkill('回春'))) then
     return false
   end
-  local ableUseSkill = MyItemHelper:ableUseSkill(objid, self.id, self.cd)
+  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
   if (not(ableUseSkill)) then
-    MyPlayerHelper:showToast(objid, '回春技能冷却中')
+    PlayerHelper:showToast(objid, '回春技能冷却中')
     return
   end
-  MyItemHelper:recordUseSkill(objid, self.id, self.cd)
+  ItemHelper:recordUseSkill(objid, self.id, self.cd)
   local bufflv = self.level + 1
   local customticks = (self.skillTime + self.level * self.addSkillTimePerLevel) * 20 -- 每秒20帧
   ActorHelper:addBuff(objid, 50, bufflv, customticks) -- 快速生命恢复
@@ -41,28 +41,28 @@ end
 SealDemonKnife = MyWeapon:new(MyWeaponAttr.sealDemonKnife)
 
 function SealDemonKnife:useItem (objid)
-  local player = MyPlayerHelper:getPlayer(objid)
+  local player = PlayerHelper:getPlayer(objid)
   if (not(player:ableUseSkill('封魔'))) then
     return false
   end
-  local ableUseSkill = MyItemHelper:ableUseSkill(objid, self.id, self.cd)
+  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
   if (not(ableUseSkill)) then
-    MyPlayerHelper:showToast(objid, '封魔技能冷却中')
+    PlayerHelper:showToast(objid, '封魔技能冷却中')
     return
   end
   local playerPos = player:getMyPosition()
   local skillRange = self.skillRange + self.level * self.addSkillRangePerLevel
   local areaid = AreaHelper:createAreaRect(playerPos, { x = skillRange, y = skillRange, z = skillRange })
-  local objids = MyActorHelper:getAllOtherTeamActorsInAreaId(objid, areaid)
+  local objids = ActorHelper:getAllOtherTeamActorsInAreaId(objid, areaid)
   AreaHelper:destroyArea(areaid)
   if (#objids > 0) then
-    MyItemHelper:recordUseSkill(objid, self.id, self.cd)
+    ItemHelper:recordUseSkill(objid, self.id, self.cd)
     for i, v in ipairs(objids) do
-      MyActorHelper:sealActor(v)
+      ActorHelper:sealActor(v)
     end
-    MyTimeHelper:callFnFastRuns (function ()
+    TimeHelper:callFnFastRuns (function ()
       for i, v in ipairs(objids) do
-        MyActorHelper:cancelSealActor(v)
+        ActorHelper:cancelSealActor(v)
       end
     end, self.skillTime + self.level * self.addSkillTimePerLevel)
   else

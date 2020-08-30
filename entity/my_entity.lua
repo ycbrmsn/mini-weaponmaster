@@ -86,6 +86,9 @@ MyPosition = {
 }
 
 function MyPosition:new (x, y, z)
+  if (not(x)) then
+    return nil
+  end
   local o
   if (type(x) == 'table') then
     o = { x = x.x, y = x.y, z = x.z }
@@ -116,13 +119,17 @@ function MyPosition:equals (myPosition)
   return myPosition.x == self.x and myPosition.y == self.y and myPosition.z == self.z
 end
 
--- 从右起每四位代表一个坐标值
+-- 从右起每四位代表一个坐标值（负数有问题）
 function MyPosition:toNumber ()
   return self.x * 100000000 + self.y * 10000 + self.z
 end
 
 function MyPosition:toString ()
   return StringHelper:concat('{x=', self.x, ',y=', self.y, ',z=', self.z, '}')
+end
+
+function MyPosition:toSimpleString ()
+  return StringHelper:concat(self.x, ',', self.y, ',', self.z)
 end
 
 -- 三维向量
@@ -157,14 +164,16 @@ function MyVector3:get ()
   return self.x, self.y, self.z
 end
 
+function MyVector3:isZero ()
+  return self.x == 0 and self.y == 0 and self.z == 0
+end
+
 -- 剧情类
 MyStory = {
-  data = {
-    title = nil,
-    name = nil,
-    desc = nil,
-    tips = nil
-  }
+  title = nil,
+  name = nil,
+  desc = nil,
+  tips = nil
 }
 
 function MyStory:new ()
@@ -174,7 +183,7 @@ function MyStory:new ()
   return o
 end
 
-function MyStory:setData (data)
+function MyStory:checkData (data)
   if (not(data)) then
     LogHelper:debug('剧情数据为空')
   elseif (not(data.title)) then
@@ -186,15 +195,4 @@ function MyStory:setData (data)
   elseif (not(data.tips)) then
     LogHelper:debug(data.title, '剧情提示为空')
   end
-  self.data = data
-end
-
-function MyStory:getData ()
-  local data = {
-    title = self.data.title,
-    name = self.data.name,
-    desc = self.data.desc,
-    tips = self.data.tips
-  }
-  return data
 end
