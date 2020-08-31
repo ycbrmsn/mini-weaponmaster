@@ -21,16 +21,8 @@ end
 -- 回春刀
 RejuvenationKnife = MyWeapon:new(MyWeaponAttr.rejuvenationKnife)
 
-function RejuvenationKnife:useItem (objid)
+function RejuvenationKnife:useItem1 (objid)
   local player = PlayerHelper:getPlayer(objid)
-  if (not(player:ableUseSkill('回春'))) then
-    return false
-  end
-  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
-  if (not(ableUseSkill)) then
-    PlayerHelper:showToast(objid, '回春技能冷却中')
-    return
-  end
   ItemHelper:recordUseSkill(objid, self.id, self.cd)
   local bufflv = self.level + 1
   local customticks = (self.skillTime + self.level * self.addSkillTimePerLevel) * 20 -- 每秒20帧
@@ -40,16 +32,8 @@ end
 -- 封魔刀
 SealDemonKnife = MyWeapon:new(MyWeaponAttr.sealDemonKnife)
 
-function SealDemonKnife:useItem (objid)
+function SealDemonKnife:useItem1 (objid)
   local player = PlayerHelper:getPlayer(objid)
-  if (not(player:ableUseSkill('封魔'))) then
-    return false
-  end
-  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
-  if (not(ableUseSkill)) then
-    PlayerHelper:showToast(objid, '封魔技能冷却中')
-    return
-  end
   local playerPos = player:getMyPosition()
   local skillRange = self.skillRange + self.level * self.addSkillRangePerLevel
   local areaid = AreaHelper:createAreaRect(playerPos, { x = skillRange, y = skillRange, z = skillRange })
@@ -58,11 +42,11 @@ function SealDemonKnife:useItem (objid)
   if (#objids > 0) then
     ItemHelper:recordUseSkill(objid, self.id, self.cd)
     for i, v in ipairs(objids) do
-      ActorHelper:sealActor(v)
+      SkillHelper:sealActor(v)
     end
     TimeHelper:callFnFastRuns (function ()
       for i, v in ipairs(objids) do
-        ActorHelper:cancelSealActor(v)
+        SkillHelper:cancelSealActor(v)
       end
     end, self.skillTime + self.level * self.addSkillTimePerLevel)
   else

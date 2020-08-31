@@ -25,22 +25,14 @@ function DrinkBloodSword:attackHit (objid, toobjid)
   end
   local player = PlayerHelper:getPlayer(objid)
   player:recoverHp(hp)
-  ActorHelper:playAndStopBodyEffectById(objid, BaseConstant.BODY_EFFECT.LIGHT3)
+  ActorHelper:playAndStopBodyEffect(objid, BaseConstant.BODY_EFFECT.LIGHT3)
 end
 
 -- 闪袭剑
 StrongAttackSword = MyWeapon:new(MyWeaponAttr.strongAttackSword)
 
-function StrongAttackSword:useItem (objid)
+function StrongAttackSword:useItem1 (objid)
   local player = PlayerHelper:getPlayer(objid)
-  if (not(player:ableUseSkill('闪袭'))) then
-    return false
-  end
-  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
-  if (not(ableUseSkill)) then
-    PlayerHelper:showToast(objid, '闪袭技能冷却中')
-    return
-  end
   local playerPos = player:getMyPosition()
   -- 循环以距离玩家正面1米递增的间隔点开始，作为中心点，扩大1格，查找生物
   local distanceTimes = self.distance + self.level * self.addDistancePerLevel
@@ -103,16 +95,8 @@ end
 -- 追风剑
 ChaseWindSword = MyWeapon:new(MyWeaponAttr.chaseWindSword)
 
-function ChaseWindSword:useItem (objid)
+function ChaseWindSword:useItem1 (objid)
   local player = PlayerHelper:getPlayer(objid)
-  if (not(player:ableUseSkill('追风'))) then
-    return false
-  end
-  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
-  if (not(ableUseSkill)) then
-    PlayerHelper:showToast(objid, '追风技能冷却中')
-    return
-  end
   ItemHelper:recordUseSkill(objid, self.id, self.cd)
   local gridid = BackpackHelper:getCurShotcutGrid(objid)
   local curDur = BackpackHelper:getGridDurability(objid, gridid) -- 耐久度

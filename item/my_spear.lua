@@ -42,16 +42,8 @@ function OverlordSpear:attackHit (objid, toobjid)
   self:reduceStrength(objid)
 end
 
-function OverlordSpear:useItem (objid)
+function OverlordSpear:useItem1 (objid)
   local player = PlayerHelper:getPlayer(objid)
-  if (not(player:ableUseSkill('霸王'))) then
-    return false
-  end
-  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
-  if (not(ableUseSkill)) then
-    PlayerHelper:showToast(objid, '霸王技能冷却中')
-    return
-  end
   ItemHelper:recordUseSkill(objid, self.id, self.cd)
   ActorHelper:clearAllBadBuff(objid) -- 清除全部减益buff
   local curHp = PlayerHelper:getHp(objid)
@@ -70,7 +62,7 @@ function OverlordSpear:useItem (objid)
   for i, v in ipairs(objids) do
     ActorHelper:appendFixedSpeed(v, 4, playerPos)
   end
-  ActorHelper:playAndStopBodyEffectById(objid, BaseConstant.BODY_EFFECT.BOOM1)
+  ActorHelper:playAndStopBodyEffect(objid, BaseConstant.BODY_EFFECT.BOOM1)
 end
 
 -- 慑魂枪
@@ -81,16 +73,8 @@ function ShockSoulSpear:attackHit (objid, toobjid)
   self:reduceStrength(objid)
 end
 
-function ShockSoulSpear:useItem (objid)
+function ShockSoulSpear:useItem1 (objid)
   local player = PlayerHelper:getPlayer(objid)
-  if (not(player:ableUseSkill('慑魂'))) then
-    return false
-  end
-  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
-  if (not(ableUseSkill)) then
-    PlayerHelper:showToast(objid, '慑魂技能冷却中')
-    return
-  end
   local playerPos = player:getMyPosition()
   local skillRange = self.skillRange + self.level * self.addSkillRangePerLevel
   local areaid = AreaHelper:createAreaRect(playerPos, { x = skillRange, y = skillRange, z = skillRange })
@@ -99,11 +83,11 @@ function ShockSoulSpear:useItem (objid)
   if (#objids > 0) then
     ItemHelper:recordUseSkill(objid, self.id, self.cd)
     for i, v in ipairs(objids) do
-      ActorHelper:imprisonActor(v)
+      SkillHelper:imprisonActor(v)
     end
     TimeHelper:callFnFastRuns (function ()
       for i, v in ipairs(objids) do
-        ActorHelper:cancelImprisonActor(v)
+        SkillHelper:cancelImprisonActor(v)
       end
     end, self.skillTime + self.level * self.addSkillTimePerLevel)
   else

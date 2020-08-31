@@ -21,22 +21,13 @@ end
 -- 坠星弓
 FallStarBow = MyWeapon:new(MyWeaponAttr.fallStarBow)
 
-function FallStarBow:useItem2 (objid)
+function FallStarBow:useItem3 (objid)
   -- 检测技能是否正在释放
   if (ItemHelper:isDelaySkillUsing(objid, '坠星')) then -- 技能释放中
     self:cancelSkill(objid)
     return
   end
   local player = PlayerHelper:getPlayer(objid)
-  if (not(player:ableUseSkill('坠星'))) then
-    return false
-  end
-  -- 检测技能cd是否完成
-  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
-  if (not(ableUseSkill)) then
-    PlayerHelper:showToast(objid, '坠星技能冷却中')
-    return
-  end
   -- 检测技能释放条件
   if (self:getObjids(objid, 1)) then
     ItemHelper:recordUseSkill(objid, self.id, self.cd) -- 记录新的技能
@@ -129,16 +120,8 @@ end
 -- 连珠弓
 OneByOneBow = MyWeapon:new(MyWeaponAttr.oneByOneBow)
 
-function OneByOneBow:useItem2 (objid)
+function OneByOneBow:useItem3 (objid)
   local player = PlayerHelper:getPlayer(objid)
-  if (not(player:ableUseSkill('连珠'))) then
-    return false
-  end
-  local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
-  if (not(ableUseSkill)) then
-    PlayerHelper:showToast(objid, '连珠技能冷却中')
-    return
-  end
   -- 查询背包内箭矢数量
   local num = BackpackHelper:getItemNumAndGrid(objid, MyMap.ITEM.ARROW_ID)
   local times = self.arrowNum + self.level * self.addArrowNumPerLevel
