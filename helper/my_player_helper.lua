@@ -1,6 +1,23 @@
 -- 我的玩家工具类
 MyPlayerHelper = {}
 
+function MyPlayerHelper.teleportHome (objid)
+  local teamid = PlayerHelper:getTeam(objid)
+  if teamid == 1 then -- 红队
+    Player:setPosition(objid, -17, 7, -5)
+  elseif teamid == 2 then -- 蓝队
+    Player:setPosition(objid, -17, 7, 20)
+  elseif teamid == 3 then -- 绿队
+    Player:setPosition(objid, -17, 7, 45)
+  elseif teamid == 4 then -- 黄队
+    Player:setPosition(objid, -46, 7, -5)
+  elseif teamid == 5 then -- 橙队
+    Player:setPosition(objid, -46, 7, 20)
+  elseif teamid == 6 then -- 紫队
+    Player:setPosition(objid, -46, 7, 45)
+  end
+end
+
 -- 事件
 
 -- 玩家进入游戏
@@ -21,7 +38,10 @@ function MyPlayerHelper:playerEnterGame (objid)
     player:setLevel(maxLevel - 1)
     player:upgrade(maxLevel - 1)
   end
-  PlayerHelper:teleportHome(objid)
+  -- TimeHelper:callFnFastRuns(function ()
+  MyPlayerHelper.teleportHome(objid)
+  --   LogHelper:debug('cs')
+  -- end, 3)
   MusicHelper:startBGM(objid, 1, true)
 end
 
@@ -76,7 +96,7 @@ function MyPlayerHelper:playerClickActor (objid, toobjid)
     end
   elseif (actorid == 6) then -- 大牛送回村
     TimeHelper:callFnFastRuns(function ()
-      PlayerHelper:teleportHome(objid)
+      MyPlayerHelper.teleportHome(objid)
     end, 2)
   elseif (actorid == 7) then -- 二牛带出村
     TimeHelper:callFnFastRuns(function ()

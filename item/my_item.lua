@@ -158,7 +158,7 @@ LogPaper = MyItem:new()
 
 function LogPaper:new ()
   local o = {
-    id = MyMap.CUSTOM.ITEM.LOG_PAPER_ID,
+    id = MyMap.ITEM.LOG_PAPER_ID,
     title = '江湖经历:',
     content = '',
     isChange = true -- 日志是否改变
